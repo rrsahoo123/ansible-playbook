@@ -3,16 +3,16 @@
   become: True
   tasks:
     - name: Install packages
-      yum:
+      yum: 
         name: "httpd"
         state: "present"
     - name: Start Apache Server
       service:
-        name: "httpd"
-        statet: "started"
+        name:  "httpd"
+        state: started
         enabled: True
     - name: Deploy static website
       copy:
         src: index.html
-        dest: /var/www/html
+        dest: /var/www/html/
 ...
