@@ -1,0 +1,21 @@
+---
+- name: create s3 bucket
+  hosts: localhost
+  connection: local
+  vars_files:
+    - cred.yml
+  tasks:
+    - name: create a simple bucket
+      amazon.aws.s3_bucket: 
+        name: rati-ansible-buckets3-18april2023
+        state: present
+        region: ap-south-1
+        aws_access_key: "{{aws_access_key}}"
+        aws_secret_key: "{{aws_secret_key}}"
+    - name: create folder in bucket
+      amazon.aws.aws_s3:
+        bucket: rati-ansible-bucket
+        object: /myfiles/TCS/documents
+        mode: create
+        aws_access_key: "{{aws_access_key}}"
+        aws_secret_key: "{{aws_secret_key}}"
