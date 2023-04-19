@@ -1,34 +1,21 @@
 ---
-- name: provisioing an ec2 instance using ansible
+# Basic provisioning example
+- name: Ansible test
   hosts: localhost
-  connection: loacl
+  connection: local
   gather_facts: False
   tags: provisioning
-
-  vars:
-    keypair: rati-apache-keypair
-    instance_type: t2.micro
-    image: ami-02eb7a4783e7e9317
-    wait: yes
-    group: webserver
-    count: 1
-    region: ap-south-1
-    security_group: sg-0eb39d2a0bf4fe12f
-
   tasks:
-  - name: Launch a new ec2 instance
-    local_action: ec2
-                  group: {{security_group}}
-                  instance_type: {{instance_type}} 
-                  image: {{image}}
-                  wait: true
-                  region: {{region}}
-                  keypair: {{keypair}}
-                  count: {{count}}
-    register: ec2
-    -name: add tags to ec2 instance
-    local_action: ec2_tag_resource={{item.id}} region:{{region}} state:present
-    with_items: "{{ec2.instance}}"
-    args:
+  - name: start an instance with a public IP address
+    amazon.aws.ec2_instance:
+      name: "MyRatiEc2instance"
+      key_name: "rati-apache-keypair"
+      instance_type: t2.micro
+      security_group: default
+      network:
+        assign_public_ip: true
+      image_id: ami-02eb7a4783e7e9317
       tags:
-        Name: MyRatiEc2instance
+        Environment: Testing
+      region: ap-south-1
+      state: present # make it 'absent' if you want to terminate ec2
